@@ -1,0 +1,33 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZGW_NOTIFICATION_ATTACHMENT_SRV" xml:lang="en"
+			sap:schema-version="1">
+			<EntityType Name="File" m:HasStream="true" sap:content-version="1">
+				<Key><PropertyRef Name="QprNo"/></Key><Property Name="QprNo" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Data" Type="Edm.Binary" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="MimeType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/></EntityType>
+			<EntityType Name="Attachment" sap:content-version="1">
+				<Key><PropertyRef Name="QprNo"/></Key><Property Name="QprNo" Type="Edm.String" Nullable="false" MaxLength="12" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="DefectItem" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="Data" Type="Edm.Binary" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="FileName" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:creatable="false" sap:updatable="false"
+					sap:sortable="false" sap:filterable="false"/><Property Name="MimeType" Type="Edm.String" Nullable="false" MaxLength="30" sap:unicode="false" sap:label="MsgType" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><Property Name="MsgText" Type="Edm.String" Nullable="false" MaxLength="35" sap:unicode="false" sap:label="MsgText" sap:creatable="false"
+					sap:updatable="false" sap:sortable="false" sap:filterable="false"/><NavigationProperty Name="File" Relationship="ZGW_NOTIFICATION_ATTACHMENT_SRV.AttachFile" FromRole="FromRole_AttachFile"
+					ToRole="ToRole_AttachFile"/></EntityType>
+			<Association Name="AttachFile" sap:content-version="1"><End Type="ZGW_NOTIFICATION_ATTACHMENT_SRV.Attachment" Multiplicity="0..1" Role="FromRole_AttachFile"/><End Type="ZGW_NOTIFICATION_ATTACHMENT_SRV.File" Multiplicity="*" Role="ToRole_AttachFile"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_AttachFile"><PropertyRef Name="QprNo"/></Principal>
+					<Dependent Role="ToRole_AttachFile"><PropertyRef Name="QprNo"/></Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<EntityContainer Name="ZGW_NOTIFICATION_ATTACHMENT_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx"><EntitySet Name="FileSet" EntityType="ZGW_NOTIFICATION_ATTACHMENT_SRV.File" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/><EntitySet Name="AttachmentSet" EntityType="ZGW_NOTIFICATION_ATTACHMENT_SRV.Attachment" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+				<AssociationSet Name="AttachFileSet" Association="ZGW_NOTIFICATION_ATTACHMENT_SRV.AttachFile" sap:creatable="false" sap:updatable="false"
+					sap:deletable="false" sap:content-version="1"><End EntitySet="AttachmentSet" Role="FromRole_AttachFile"/><End EntitySet="FileSet" Role="ToRole_AttachFile"/></AssociationSet>
+			</EntityContainer><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZGW_NOTIFICATION_ATTACHMENT_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZGW_NOTIFICATION_ATTACHMENT_SRV/$metadata"/></Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
