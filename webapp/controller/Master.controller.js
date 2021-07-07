@@ -16,11 +16,31 @@ sap.ui.define([
 		onInit: function () {
 			// debugger;
 			this.getOwnerComponent().setModel(new JSONModel({
-				busy: true,
+				busy: false,
+				plant: "1031",
+				vendor: "0000200323",
+				showAdvancedSearch: false
 			}), "listViewModel");
 			this.oRouter = this.getOwnerComponent().getRouter();
 			this._bDescendingSort = false;
-			this._getUserDetails();
+			if (!sap.ushell) {} else {
+				if (sap.ui.getCore().plants != undefined) {
+					if (sap.ui.getCore().plants.hasOwnProperty("plant")) {
+						if (sap.ui.getCore().plants.plant) {
+							this.getOwnerComponent().getModel("listViewModel").setProperty("/plant", sap.ui.getCore().plants.plant);
+							this._getMasterListData();
+						}
+					}
+					sap.ui.getCore().plants.registerListener(function (val) {
+						if (val) {
+							this.getOwnerComponent().getModel("listViewModel").setProperty("/plant", val);
+							this._getMasterListData();
+						}
+					}.bind(this));
+				}
+			}
+			// this._getUserDetails();
+			// this._getMasterListData();
 		},
 
 		onListItemPress: function (oEvent) {
@@ -105,6 +125,44 @@ sap.ui.define([
 			} else {
 				this._applyFilter([]);
 			}
+		},
+		onChangePlant: function (oEvent) {
+			debugger;
+			this.getOwnerComponent().getModel("listViewModel").setProperty("/plant", oEvent.getSource().getSelectedItem().getKey());
+			jQuery.ajax({
+				type: "GET",
+				contentType: "application/x-www-form-urlencoded",
+				headers: {
+					"Authorization": "Basic NDMyYjNjZjMtNGE1OS0zOWRiLWEwMWMtYzM5YzhjNGYyNTNkOjk2NTJmOTM0LTkwMmEtMzE1MS05OWNiLWVjZTE1MmJkZGQ1NA=="
+				},
+				url: "/token/accounts/c70391893/plant/vendors?plantId=" + oEvent.getSource().getSelectedItem().getKey(),
+				dataType: "json",
+				async: false,
+				success: function (data, textStatus, jqXHR) {
+					this.plants = data.plants;
+					this.getOwnerComponent().setModel(new JSONModel(data), "vendorModel");
+				}.bind(this),
+				error: function (data) {
+					// console.log("error", data);
+				}
+			});
+		},
+		onChangeVendor: function (oEvent) {
+			this.getOwnerComponent().getModel("listViewModel").setProperty("/VendorId", oEvent.getSource().getSelectedItem().getKey());
+		},
+		onAdvancedSearchPress: function () {
+			if (!this._oDialog) {
+				this._oDialog = sap.ui.xmlfragment("com.minda.QPR.fragments.AdvancedSearch", this);
+				this.getView().addDependent(this._oDialog);
+			}
+			this._oDialog.open();
+		},
+		onPressCloseDialog: function () {
+			this._oDialog.close();
+		},
+		onPressApply: function () {
+			this._oDialog.close();
+			this._getMasterListData();
 		}
 
 	});
